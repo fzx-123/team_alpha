@@ -1,0 +1,31 @@
+import os
+import pandas as pd
+
+path = 'C:/Users/ASUS/Desktop/存放excell表格'
+# print(os.scandir(path))#os.scandir(path)获得的是一个可迭代对象
+df1 = pd.read_excel(path + '/' + list(os.scandir(path))[0].name,sheet_name='Sheet1')
+# print(df1.columns)
+data_list = []#存放所有值
+col_list  = []#存放列的名称
+
+for i in range(len(df1.columns)):
+    data_list.append(list())
+    col_list.append(df1.columns[i])
+i = 0
+for file in os.scandir(path):
+    path_ex = path + '/' + file.name
+    df = pd.read_excel(path_ex,sheet_name='Sheet1')
+    # nrows = df.shape[0]
+    ncols = df.columns.size
+    for j in range(ncols):
+        data_list[j].append(df.iloc[0,j])
+    i += 1
+dic = dict()
+for i in range(len(col_list)):
+    dic[col_list[i]] = data_list[i]
+df_total = pd.DataFrame(dic)
+# df_total = df.set_index('sno')
+df_total.to_excel('C:/Users/ASUS/Desktop/excel_total.xlsx')
+
+read_df = pd.read_excel('C:/Users/ASUS/Desktop/excel_total.xlsx')
+print(read_df)
