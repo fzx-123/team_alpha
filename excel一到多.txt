@@ -1,0 +1,29 @@
+import pandas as pd
+import os
+xlsx_name = r'C:\Users\ASUS\Desktop\excel一到多\excel一到多总表.xlsx'
+#用来筛选的列名
+filter_column_name = 'sno'
+#将该列去重后保存为list
+df = pd.read_excel(xlsx_name)
+city_names = df[filter_column_name].unique().tolist()
+#获取所有sheet名
+df = pd.ExcelFile(xlsx_name)
+sheet_names = df.sheet_names
+#不需要筛选的sheet名
+os.chdir(r'C:\Users\ASUS\Desktop\excel一到多')
+for city_name in city_names:
+    city_excel_name = str(city_name) + '.xlsx'
+    writer = pd.ExcelWriter(city_excel_name)
+    city_name_to_list = []
+    city_name_to_list.append(city_name)
+    for sheet_name in sheet_names:
+        tmp_df = pd.read_excel(xlsx_name, sheet_name=sheet_name)
+        tmp_sheet = tmp_df[tmp_df[filter_column_name].isin(city_name_to_list)]
+        tmp_sheet.to_excel(excel_writer=writer, sheet_name=sheet_name, encoding="utf-8", index=False)
+    writer.save()
+    writer.close()
+
+# path = r'C:\Users\ASUS\Desktop\excel一到多'
+# for file in os.scandir(path):
+#     df = pd.read_excel(file.name)
+#     print(df)
